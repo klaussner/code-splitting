@@ -8,13 +8,14 @@ function message(text) {
 }
 
 global.meteorBundleRuntime = function (debug) {
-  let waiting, loaded;
+  let waiting, loaded, alreadyLoaded;
 
   if (debug) {
     waiting = message('"waiting for bundle " + bundleId');
     loaded = message('"bundle " + bundleId + " loaded"');
+    alreadyLoaded = message('"bundle " + bundleId + " already loaded"');
   } else {
-    waiting = loaded = '';
+    waiting = loaded = alreadyLoaded = '';
   }
 
   return (
@@ -26,6 +27,7 @@ function meteorEnsureBundle(bundleId) {
   var existingPromise = meteorBundlePromises[bundleId];
 
   if (existingPromise) {
+    ${alreadyLoaded}
     return existingPromise;
   }
 
