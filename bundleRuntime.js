@@ -1,7 +1,10 @@
 'use strict';
 
 function message(text) {
-  return `console.log("code splitting:", ${text});`;
+  const css1 = 'background: salmon; color: white';
+  const css2 = 'color: salmon';
+
+  return `console.log("%ccode splitting%c " + ${text}, '${css1}', '${css2}');`;
 }
 
 global.meteorBundleRuntime = function (debug) {
