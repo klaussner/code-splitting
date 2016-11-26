@@ -239,10 +239,14 @@ ${transpiled.data}
 };\n`;
       });
 
+      // Bundles have to be minified here because they are not passed to the
+      // minifier plugin. Meteor doesn't provide the build mode but we can use
+      // the NODE_ENV environment variable instead.
       if (process.env.NODE_ENV === 'production') {
         code = SplittingMinifier.minify(code);
       }
 
+      // We can use one input file to generate an arbitrary number of assets
       inputFiles[0].addAsset({
         data: code,
         path: `../../bundle${bundle.id}.js`
