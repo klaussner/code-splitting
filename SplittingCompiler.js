@@ -7,7 +7,8 @@ const recast = Npm.require('recast');
 const babylonParser = {
   parse: function (code) {
     return babylon.parse(code, {
-      allowImportExportEverywhere: true
+      allowImportExportEverywhere: true,
+      plugins: ['jsx', 'flow', 'objectRestSpread']
     });
   }
 };
