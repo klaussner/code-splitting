@@ -13,9 +13,22 @@ const babylonParser = {
   }
 };
 
-const babelCompiler = new BabelCompiler({
-  react: true
-});
+// Transpiles ES2015+ code using Babel from the babel-compiler package
+function processOneFileForTarget(inputFile, code) {
+  const options = Babel.getDefaultOptions({
+    react: true
+  });
+
+  const transpiled = Babel.compile(code, options);
+  const path = inputFile.getPathInPackage();
+
+  return {
+    sourcePath: path,
+    path,
+    data: transpiled.code,
+    hash: transpiled.hash
+  };
+}
 
 class SplittingCompiler {
   processFilesForTarget(inputFiles) {
@@ -40,7 +53,7 @@ class SplittingCompiler {
           rootBundle.add(file);
         }
       } else {
-        inputFile.addJavaScript(babelCompiler.processOneFileForTarget(
+        inputFile.addJavaScript(processOneFileForTarget(
           inputFile, inputFile.getContentsAsString()
         ));
       }
@@ -57,7 +70,7 @@ class SplittingCompiler {
       const inputFile = file.inputFile;
 
       if (rootBundle.includes(path)) {
-        inputFile.addJavaScript(babelCompiler.processOneFileForTarget(
+        inputFile.addJavaScript(processOneFileForTarget(
           inputFile, file.code
         ));
       } else {
@@ -229,7 +242,7 @@ class SplittingCompiler {
       bundle.forEach(file => {
         const stub = `meteorModuleStubs["${file.path}"]`;
 
-        const transpiled = babelCompiler.processOneFileForTarget(
+        const transpiled = processOneFileForTarget(
           file.inputFile, file.code
         );
 
