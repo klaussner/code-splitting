@@ -5,28 +5,31 @@ class SplittingMinifier {
     const mode = options.minifyMode;
 
     if (mode === 'development') {
-      files.forEach(file => {
-        const path = file.getPathInBundle();
-
-        if (path === 'app/app.js') {
-          const code = file.getContentsAsString();
-
-          file.addJavaScript({
-            data: meteorBundleRuntime(true) + code,
-            path
-          });
-        } else {
-          file.addJavaScript({
-            data: file.getContentsAsBuffer(),
-            sourceMap: file.getSourceMap(),
-            path
-          });
-        }
-      });
-
-      return;
+      this.processForDevelopment(files);
+    } else {
+      this.processForProduction(files);
     }
+  }
 
+  processForDevelopment(files) {
+    files.forEach(file => {
+      const path = file.getPathInBundle();
+      let data, sourceMap;
+
+      if (path === 'app/app.js') {
+        data = meteorBundleRuntime(true) + file.getContentsAsString();
+      } else {
+        data = file.getContentsAsBuffer();
+        sourceMap = file.getSourceMap();
+      }
+
+      file.addJavaScript({
+        data, sourceMap, path
+      });
+    });
+  }
+
+  processForProduction(files) {
     let code = '';
 
     files.forEach(file => {
