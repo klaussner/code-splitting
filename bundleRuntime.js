@@ -24,14 +24,14 @@ var meteorBundlePromises = {};
 
 function meteorEnsureBundle(bundleId) {
   ${waiting}
-  var existingPromise = meteorBundlePromises[bundleId];
+  var promise = meteorBundlePromises[bundleId];
 
-  if (existingPromise) {
+  if (promise) {
     ${alreadyLoaded}
-    return existingPromise;
+    return promise;
   }
 
-  var promise = new Promise(function (resolve) {
+  promise = new Promise(function (resolve) {
     var script = document.createElement("script");
 
     script.onload = function () {
