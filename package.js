@@ -1,6 +1,6 @@
 Package.describe({
   name: 'klaussner:code-splitting',
-  version: '0.0.2',
+  version: '0.0.3',
   summary: 'Experimental code splitting build plugin for Meteor',
   git: 'https://github.com/klaussner/code-splitting'
 });
