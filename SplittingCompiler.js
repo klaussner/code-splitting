@@ -91,6 +91,15 @@ class SplittingCompiler {
     return fsPath.join(fsPath.dirname(file.path), path);
   }
 
+  // Returns the file for the given path.
+  resolvePath(path) {
+    let file = this.files[path]
+      || this.files[`${path}.js`]
+      || this.files[`${path}/index.js`];
+
+    return file;
+  }
+
   // Searches for imports in the given file and stores them in its `imports`
   // property. Functions that import files asynchronously are transformed in
   // order to make them wait until imported modules are loaded.
@@ -176,7 +185,7 @@ class SplittingCompiler {
     }
 
     imports.forEach(path => {
-      const childFile = this.files[path];
+      const childFile = this.resolvePath(path);
 
       // Don't attempt to find imports for files that are unknown to this build
       // plugin, e.g., HTML and CSS
@@ -184,8 +193,8 @@ class SplittingCompiler {
         return;
       }
 
-      if (!set.has(path)) {
-        set.add(path);
+      if (!set.has(childFile.path)) {
+        set.add(childFile.path);
         this.findStaticImports(childFile, set);
       }
     });
@@ -207,7 +216,7 @@ class SplittingCompiler {
         const childBundle = new Bundle(bundleId, bundle);
 
         file.imports.async[bundleId].forEach(path => {
-          childBundle.add(this.files[path]);
+          childBundle.add(this.resolvePath(path));
         });
 
         this.createBundles(childBundle);
