@@ -105,7 +105,6 @@ class SplittingCompiler {
   // order to make them wait until imported modules are loaded.
   collectImports(file) {
     const self = this, asyncCandidates = [];
-    let isAsync, hasAsyncImports;
 
     const ast = recast.parse(file.code, {
       parser: babylonParser
@@ -119,10 +118,7 @@ class SplittingCompiler {
 
     recast.types.visit(ast, {
       visitFunction: function (astPath) {
-        isAsync = astPath.node.async;
-        hasAsyncImports = false;
-
-        if (isAsync) {
+        if (astPath.node.async) {
           asyncCandidates.unshift(new Set);
         }
 
@@ -133,11 +129,11 @@ class SplittingCompiler {
         // loaded before continuing execution.
         let candidates;
 
-        if (isAsync) {
+        if (astPath.node.async) {
           candidates = asyncCandidates.shift();
         }
 
-        if (hasAsyncImports) {
+        if (candidates && candidates.size > 0) {
           const b = recast.types.builders;
           const bundleId = ++self.bundleCounter;
 
@@ -159,9 +155,8 @@ class SplittingCompiler {
 
         if (!path.startsWith('/')) return false;
 
-        if (isAsync) {
+        if (asyncCandidates[0]) {
           asyncCandidates[0].add(path);
-          hasAsyncImports = true;
         } else {
           imports.static.add(path);
         }
