@@ -41,7 +41,7 @@ See [WHY_NEST_IMPORTS.md in benjamn/reify](https://github.com/benjamn/reify/blob
 # Drawbacks
 
 * Packages from npm and assets (e.g., Sass and HTML files) that are imported from JavaScript files always become part of the default bundle
-* Generates more code than necessary due to limitations of Meteor's build plugin API
+* Generates more code than necessary
 * Replaces two core Meteor packages
 * Limited optimization capabilities
 * No source maps
