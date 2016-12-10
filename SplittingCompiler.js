@@ -239,7 +239,7 @@ class SplittingCompiler {
 
   emitBundles(bundle, inputFiles) {
     // The first bundle consisting of eagerly loaded files and their
-    // dependencies is already written my Meteor, so we can skip it here.
+    // dependencies is already written by Meteor, so we can skip it here.
     if (bundle.parent) {
       let code = '';
 
